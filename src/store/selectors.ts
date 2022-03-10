@@ -12,6 +12,7 @@ export const getScore = createSelector(GameStore, (state: GameState) => state.sc
 export const getTime = createSelector(GameStore, (state: GameState) => state.time);
 export const getRankings = createSelector(GameStore, (state: GameState) => state.rankings);
 export const getSelectedPictures = createSelector(GameStore, (state: GameState) => state.selectedPictures);
+export const getClickedCards = createSelector(GameStore, (state: GameState) => state.clicked);
 export const getPictures = (quantity: number) => createSelector(GameStore, (state: GameState) => {
   const selected = [ ...state.availablePictures ].sort(() => 0.5 - Math.random()).slice(0, quantity);
   return [ ...selected, ...selected ].sort(() => 0.5 - Math.random());

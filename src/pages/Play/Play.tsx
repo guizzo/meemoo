@@ -6,11 +6,11 @@ import GameStatus from '../../components/GameStatus/GameStatus';
 import GameCards from '../../components/GameCards/GameCards';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { END_GAME, FLIP_CARD, START_GAME, TIME_TICK } from '../../store/actions';
+import { END_GAME, FLIP_CARD, SET_PAIR_CORRECT, SET_PAIR_WRONG, START_GAME, TIME_TICK } from '../../store/actions';
 import { Picture } from '../../models/picture';
 
 /**
- * ***** ANIMAZIONE CARTE CHE SI GIRANO AL CLICK ******
+ * ***** DONE: ANIMAZIONE CARTE CHE SI GIRANO AL CLICK ******
  * 1. creare action ADD_TO_SELECTED_POOL
  * 2. al click della carta, dispatchare ADD_TO_SELECTED_POOL
  * 3. creare selector getSelectedPool
@@ -33,7 +33,7 @@ const Play: FunctionComponent = () => {
 
   const navigator = useNavigate();
 
-  const { isPlaying, pictures, player, score, time, selectCardHandler } = useGame();
+  const { isPlaying, pictures, clickedCards, player, score, time, selectCardHandler } = useGame();
 
   const [ countdown, setCountdown ] = useState<string[]>([]);
 
@@ -91,7 +91,7 @@ const Play: FunctionComponent = () => {
     return () => {
       clearTimeout(timeout);
     };
-  }, [ isPlaying, countdown ])
+  }, [ isPlaying, countdown, dispatch ])
 
   // INFO: start game countdown
   useEffect(() => {
@@ -111,6 +111,23 @@ const Play: FunctionComponent = () => {
       clearInterval(interval);
     };
   }, [ isPlaying, time, dispatch ]);
+
+  // INFO: timed out animation on card click
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout>;
+    if (clickedCards && clickedCards.length === 2) {
+      if (clickedCards[ 0 ].id === clickedCards[ 1 ].id) {
+        dispatch(SET_PAIR_CORRECT());
+      } else {
+        timeout = setTimeout(() => {
+          dispatch(SET_PAIR_WRONG());
+        }, 1000);
+      }
+    }
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [ clickedCards, dispatch ]);
 
   return (
     <Container>

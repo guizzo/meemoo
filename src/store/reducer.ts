@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { FLUSH_PLAYER, GET_RANKINGS, SET_PLAYER } from './thunk';
-import { END_GAME, FLIP_CARD, LAUNCH_GAME, SELECT_CARD, START_GAME, TIME_TICK, UPDATE_SCORE } from './actions';
+import { END_GAME, FLIP_CARD, LAUNCH_GAME, SELECT_CARD, SET_PAIR_CORRECT, SET_PAIR_WRONG, START_GAME, TIME_TICK, UPDATE_SCORE } from './actions';
 import { Picture } from '../models/picture';
 import { Ranking } from '../models/ranking';
 
@@ -14,6 +14,7 @@ export interface GameState {
   rankings: Ranking[];
   availablePictures: Picture[];
   selectedPictures: Picture[];
+  clicked: Picture[];
 }
 
 const GameInitialState: GameState = {
@@ -47,6 +48,7 @@ const GameInitialState: GameState = {
     { id: 'unicorn',      url: '/cartoon/unicorn.png',      selected: false, correct: false }
   ],
   selectedPictures: [],
+  clicked: []
 };
 
 const gameReducer = createReducer<GameState>(GameInitialState, {
@@ -80,37 +82,58 @@ const gameReducer = createReducer<GameState>(GameInitialState, {
     finished: true
   }),
   [ SELECT_CARD.type ]: (state, action) => {
-    let score: number = state.score;
+    // let score: number = state.score;
+    // let selectedPictures: Picture[] = [ ...state.selectedPictures ];
+    // const clickedPictures: Picture[] = selectedPictures.filter((card: Picture) => card.selected && !card.correct);
+    // if (clickedPictures.length === 1) {
+    //   const match = clickedPictures[ 0 ].id === selectedPictures[ action.payload ].id;
+    //   if (match) {
+    //     selectedPictures = selectedPictures.map((card: Picture) => {
+    //       if (card.id === selectedPictures[ action.payload ].id) {
+    //         return {
+    //           ...card,
+    //           selected: true,
+    //           correct: true
+    //         };
+    //       }
+    //       return card;
+    //     });
+    //     score = score + 10;
+    //   } else {
+    //     selectedPictures = selectedPictures.map((card: Picture, index) => {
+    //       if (!card.correct) {
+    //         return {
+    //           ...card,
+    //           selected: false
+    //         };
+    //       }
+    //       return card;
+    //     });
+    //   }
+    // } else {
+    //   selectedPictures = selectedPictures.map((card: Picture, index) => {
+    //     if (index === action.payload) {
+    //       return {
+    //         ...card,
+    //         selected: true
+    //       };
+    //     }
+    //     return card;
+    //   });
+    // }
+    // return {
+    //   ...state,
+    //   score,
+    //   selectedPictures
+    // };
+    let clicked: Picture[] = [ ...state.clicked ];
     let selectedPictures: Picture[] = [ ...state.selectedPictures ];
-    const clickedPictures: Picture[] = selectedPictures.filter((card: Picture) => card.selected && !card.correct);
-    if (clickedPictures.length === 1) {
-      const match = clickedPictures[ 0 ].id === selectedPictures[ action.payload ].id;
-      if (match) {
-        selectedPictures = selectedPictures.map((card: Picture) => {
-          if (card.id === selectedPictures[ action.payload ].id) {
-            return {
-              ...card,
-              selected: true,
-              correct: true
-            };
-          }
-          return card;
-        });
-        score = score + 10;
-      } else {
-        selectedPictures = selectedPictures.map((card: Picture, index) => {
-          if (!card.correct) {
-            return {
-              ...card,
-              selected: false
-            };
-          }
-          return card;
-        });
-      }
-    } else {
-      selectedPictures = selectedPictures.map((card: Picture, index) => {
-        if (index === action.payload) {
+    let card = { ...state.selectedPictures[ action.payload ] };
+    if (card) {
+      clicked = [ ...clicked, { ...card, index: action.payload } ];
+      selectedPictures = selectedPictures.map((card: Picture, index: number) => {
+        const exist = clicked.find((el: Picture) => el.index === index);
+        if (exist) {
           return {
             ...card,
             selected: true
@@ -121,10 +144,47 @@ const gameReducer = createReducer<GameState>(GameInitialState, {
     }
     return {
       ...state,
-      score,
-      selectedPictures
+      selectedPictures,
+      clicked
     };
   },
+  [ SET_PAIR_CORRECT.type ]: (state, action) => {
+    const selectedPictures = state.selectedPictures.map((picture: Picture, index: number) => {
+      const exist = state.clicked.find((el: Picture) => index === el.index);
+      if (exist) {
+        return {
+          ...picture,
+          correct: true
+        };
+      }
+      return {
+        ...picture
+      };
+    });
+    const counts: number = selectedPictures.filter((card: Picture) => card.correct).length;
+    const score: number = counts * 25;
+    return {
+      ...state,
+      score,
+      selectedPictures,
+      clicked: []
+    };
+  },
+  [ SET_PAIR_WRONG.type ]: (state, action) => ({
+    ...state,
+    selectedPictures: state.selectedPictures.map((picture: Picture) => {
+      if (picture.selected && !picture.correct) {
+        return {
+          ...picture,
+          selected: false
+        };
+      }
+      return {
+        ...picture
+      };
+    }),
+    clicked: []
+  }),
   [ TIME_TICK.type ]: (state, action) => ({
     ...state,
     time: state.time - 1

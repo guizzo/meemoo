@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { getIsFinished, getIsPlaying, getIsStarted, getPlayer, getRankings, getScore, getSelectedPictures, getTime } from '../store/selectors';
+import { getClickedCards, getIsFinished, getIsPlaying, getIsStarted, getPlayer, getRankings, getScore, getSelectedPictures, getTime } from '../store/selectors';
 import { Ranking } from '../models/ranking';
 import { ChangeEvent } from 'react';
 import { SET_PLAYER } from '../store/thunk';
@@ -16,6 +16,7 @@ interface HookProps {
   time: number;
   rankings: Ranking[];
   pictures: Picture[];
+  clickedCards: Picture[];
   playerChangeHandler: (e: ChangeEvent<HTMLInputElement>) => void;
   launchGameHandler: () => void;
   selectCardHandler: (index: number) => void;
@@ -34,13 +35,18 @@ const useGame = (): HookProps => {
   const time: number = useSelector(getTime);
   const rankings: Ranking[] = useSelector(getRankings);
   const pictures: Picture[] = useSelector(getSelectedPictures);
+  const clickedCards: Picture[] = useSelector(getClickedCards);
 
   const playerChangeHandler = (e: ChangeEvent<HTMLInputElement>) => dispatch(SET_PLAYER({ player: e.target.value.toUpperCase() }));
   const launchGameHandler = () => {
     dispatch(LAUNCH_GAME());
     navigator('/play');
   };
-  const selectCardHandler = (index: number) => dispatch(SELECT_CARD(index));
+  const selectCardHandler = (index: number) => {
+    if (clickedCards.length < 2) {
+      dispatch(SELECT_CARD(index));
+    }
+  };
 
   return {
     isPlaying,
@@ -51,6 +57,7 @@ const useGame = (): HookProps => {
     time,
     rankings,
     pictures,
+    clickedCards,
     playerChangeHandler,
     launchGameHandler,
     selectCardHandler

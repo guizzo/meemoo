@@ -60,6 +60,14 @@ const ItemContainer = styled.div`
   height: 100%;
   padding: 12px 40px;
   background-color: rgba(255, 255, 255, .15);
+  text-shadow:  2px 0 0 #fff, 
+                -2px 0 0 #fff, 
+                0 2px 0 #fff, 
+                0 -2px 0 #fff, 
+                1px 1px #fff, 
+                -1px -1px 0 #fff,
+                1px -1px 0 #fff, 
+                -1px 1px 0 #fff;
 `;
 
 const Player = styled.div`

@@ -14,7 +14,8 @@ export const ACTION_SELECT_CARD = 'SELECT CARD';
 export const ACTION_UPDATE_SCORE = 'UPDATE SCORE';
 export const ACTION_ADD_SCORE = 'ADD SCORE';
 export const ACTION_FLIP_CARD = 'FLIP CARD';
-// export const ACTION_SELECT_CARD = 'SELECT CARD';
+export const ACTION_SET_PAIR_CORRECT = 'SET PAIR CORRECT';
+export const ACTION_SET_PAIR_WRONG = 'SET PAIR WRONG';
 
 export const SET_PLAYER = createAction<string>(ACTION_SET_PLAYER);
 export const LAUNCH_GAME = createAction(ACTION_LAUNCH_GAME);
@@ -25,3 +26,5 @@ export const SELECT_CARD = createAction<number>(ACTION_SELECT_CARD);
 export const UPDATE_SCORE = createAction<number>(ACTION_UPDATE_SCORE)
 export const ADD_SCORE = createAction<number>(ACTION_ADD_SCORE);
 export const FLIP_CARD = createAction<number>(ACTION_FLIP_CARD);
+export const SET_PAIR_CORRECT = createAction(ACTION_SET_PAIR_CORRECT);
+export const SET_PAIR_WRONG = createAction(ACTION_SET_PAIR_WRONG);
