@@ -8,15 +8,9 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { END_GAME, FLIP_CARD, SET_PAIR_CORRECT, SET_PAIR_WRONG, START_GAME, TIME_TICK } from '../../store/actions';
 import { Picture } from '../../models/picture';
+import Score from '../../components/Score/Score';
 
 /**
- * ***** DONE: ANIMAZIONE CARTE CHE SI GIRANO AL CLICK ******
- * 1. creare action ADD_TO_SELECTED_POOL
- * 2. al click della carta, dispatchare ADD_TO_SELECTED_POOL
- * 3. creare selector getSelectedPool
- * 4. useEffect su selectedCardPool
- * 5. se selectedCardPool.length === 2 allora effettuare il controllo, se negativo girarle entrambe, se positivo flaggarle entrambe
- *
  * ***** GESTIONE CLASSIFICA GIOCATORI ******
  * 1. usare action ADD_SCORE
  * 2. al completamento della partita OR allo scadere del timer dispatchare la fine del gioco e settare lo score tramite un thunk
@@ -33,7 +27,7 @@ const Play: FunctionComponent = () => {
 
   const navigator = useNavigate();
 
-  const { isPlaying, pictures, clickedCards, player, score, time, selectCardHandler } = useGame();
+  const { isPlaying, isFinished, isTouched, isScoreStored, pictures, clickedCards, player, score, time, selectCardHandler, setScore } = useGame();
 
   const [ countdown, setCountdown ] = useState<string[]>([]);
 
@@ -105,14 +99,16 @@ const Play: FunctionComponent = () => {
       if (time <= 0) {
         clearInterval(interval);
         dispatch(END_GAME());
+        setScore();
       }
     }
     return () => {
       clearInterval(interval);
     };
-  }, [ isPlaying, time, dispatch ]);
+  }, [ isPlaying, time, setScore, dispatch ]);
 
   // INFO: timed out animation on card click
+  // TODO: esternalizzare il timeout in uno state, in modo da poterlo stoppare se il giocatore completa il gioco prima della fine del tempo
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>;
     if (clickedCards && clickedCards.length === 2) {
@@ -121,13 +117,24 @@ const Play: FunctionComponent = () => {
       } else {
         timeout = setTimeout(() => {
           dispatch(SET_PAIR_WRONG());
-        }, 1000);
+        }, 800);
       }
     }
     return () => {
       clearTimeout(timeout);
     };
   }, [ clickedCards, dispatch ]);
+
+  // INFO: complete game if player match all cards before time end
+  useEffect(() => {
+    if (isTouched && !isScoreStored) {
+      const correctCards: number = pictures.filter((picture: Picture) => picture.correct).length;
+      if (correctCards === pictures.length) {
+        dispatch(END_GAME());
+        setScore();
+      }
+    }
+  }, [ pictures, isTouched, isScoreStored, setScore, dispatch ]);
 
   return (
     <Container>
@@ -138,6 +145,10 @@ const Play: FunctionComponent = () => {
       <GameCards
         pictures={ pictures }
         onCardClick={ selectCardHandler }/>
+      <Score
+        gameIsEnded={ isFinished }
+        player={ player }
+        score={ score }/>
     </Container>
   );
 
@@ -146,6 +157,7 @@ const Play: FunctionComponent = () => {
 export default Play;
 
 const Container = styled.div`
+  position: relative;
   height: 100%;
   width: 100%;
   display: flex;
