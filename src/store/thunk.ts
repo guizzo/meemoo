@@ -33,9 +33,8 @@ export const SET_RANKING = createAsyncThunk(ACTION_SET_RANKINGS, async ({ player
     const stored: string | null = await localStorage.getItem(RANKINGS_KEY);
     if (stored) {
       const currentRankings = JSON.parse(stored);
-      data = [ ...currentRankings, { player, score } ]
-        .filter((ranking: Ranking) => ranking.player !== player)
-        .sort((a: Ranking, b: Ranking) => a.score > b.score ? 1 : 0);
+      data = currentRankings.filter((ranking: Ranking) => ranking.player !== player);
+      data = [ ...data, { player, score } ].sort((a: Ranking, b: Ranking) => a.score > b.score ? -1 : 0);
       const newData = JSON.stringify(data);
       await localStorage.setItem(RANKINGS_KEY, newData);
     }

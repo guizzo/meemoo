@@ -1,5 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { FLUSH_PLAYER, GET_RANKINGS, SET_PLAYER } from './thunk';
+import { FLUSH_PLAYER, GET_RANKINGS, SET_PLAYER, SET_RANKING } from './thunk';
 import { END_GAME, FLIP_CARD, LAUNCH_GAME, SELECT_CARD, SET_PAIR_CORRECT, SET_PAIR_WRONG, START_GAME, TIME_TICK, UPDATE_SCORE } from './actions';
 import { Picture } from '../models/picture';
 import { Ranking } from '../models/ranking';
@@ -11,6 +11,8 @@ export interface GameState {
   time: number;
   started: boolean,
   finished: boolean;
+  touched: boolean;
+  stored: boolean;
   rankings: Ranking[];
   availablePictures: Picture[];
   selectedPictures: Picture[];
@@ -24,6 +26,8 @@ const GameInitialState: GameState = {
   time: 60,
   started: false,
   finished: false,
+  touched: false,
+  stored: false,
   rankings: [],
   availablePictures: [
     { id: 'baby',         url: '/cartoon/baby.png',         selected: false, correct: false },
@@ -64,6 +68,10 @@ const gameReducer = createReducer<GameState>(GameInitialState, {
     ...state,
     rankings: action.payload
   }),
+  [ SET_RANKING.fulfilled.type ]: (state, action) => ({
+    ...state,
+    stored: true
+  }),
   [ LAUNCH_GAME.type ]: (state, action) => {
     const pictures = [ ...state.availablePictures ].sort(() => 0.5 - Math.random()).slice(0, 9);
     const selectedPictures = [ ...pictures, ...pictures ].sort(() => 0.5 - Math.random());
@@ -82,50 +90,6 @@ const gameReducer = createReducer<GameState>(GameInitialState, {
     finished: true
   }),
   [ SELECT_CARD.type ]: (state, action) => {
-    // let score: number = state.score;
-    // let selectedPictures: Picture[] = [ ...state.selectedPictures ];
-    // const clickedPictures: Picture[] = selectedPictures.filter((card: Picture) => card.selected && !card.correct);
-    // if (clickedPictures.length === 1) {
-    //   const match = clickedPictures[ 0 ].id === selectedPictures[ action.payload ].id;
-    //   if (match) {
-    //     selectedPictures = selectedPictures.map((card: Picture) => {
-    //       if (card.id === selectedPictures[ action.payload ].id) {
-    //         return {
-    //           ...card,
-    //           selected: true,
-    //           correct: true
-    //         };
-    //       }
-    //       return card;
-    //     });
-    //     score = score + 10;
-    //   } else {
-    //     selectedPictures = selectedPictures.map((card: Picture, index) => {
-    //       if (!card.correct) {
-    //         return {
-    //           ...card,
-    //           selected: false
-    //         };
-    //       }
-    //       return card;
-    //     });
-    //   }
-    // } else {
-    //   selectedPictures = selectedPictures.map((card: Picture, index) => {
-    //     if (index === action.payload) {
-    //       return {
-    //         ...card,
-    //         selected: true
-    //       };
-    //     }
-    //     return card;
-    //   });
-    // }
-    // return {
-    //   ...state,
-    //   score,
-    //   selectedPictures
-    // };
     let clicked: Picture[] = [ ...state.clicked ];
     let selectedPictures: Picture[] = [ ...state.selectedPictures ];
     let card = { ...state.selectedPictures[ action.payload ] };
@@ -145,6 +109,7 @@ const gameReducer = createReducer<GameState>(GameInitialState, {
     return {
       ...state,
       selectedPictures,
+      touched: true,
       clicked
     };
   },
