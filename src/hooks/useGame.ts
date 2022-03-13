@@ -1,8 +1,19 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { getClickedCards, getIsFinished, getIsPlaying, getIsStarted, getPlayer, getRankings, getScore, getSelectedPictures, getTime } from '../store/selectors';
+import {
+  getClickedCards,
+  getIsFinished,
+  getIsPlaying, getIsScoreStored,
+  getIsStarted,
+  getIsTouched,
+  getPlayer,
+  getRankings,
+  getScore,
+  getSelectedPictures,
+  getTime
+} from '../store/selectors';
 import { Ranking } from '../models/ranking';
 import { ChangeEvent } from 'react';
-import { SET_PLAYER } from '../store/thunk';
+import { SET_PLAYER, SET_RANKING } from '../store/thunk';
 import { LAUNCH_GAME, SELECT_CARD } from '../store/actions';
 import { useNavigate } from 'react-router-dom';
 import { Picture } from '../models/picture';
@@ -11,6 +22,8 @@ interface HookProps {
   isPlaying: boolean;
   isStarted: boolean;
   isFinished: boolean;
+  isTouched: boolean;
+  isScoreStored: boolean;
   player: string;
   score: number;
   time: number;
@@ -20,6 +33,7 @@ interface HookProps {
   playerChangeHandler: (e: ChangeEvent<HTMLInputElement>) => void;
   launchGameHandler: () => void;
   selectCardHandler: (index: number) => void;
+  setScore: () => void;
 }
 
 const useGame = (): HookProps => {
@@ -30,6 +44,8 @@ const useGame = (): HookProps => {
   const isPlaying: boolean = useSelector(getIsPlaying);
   const isStarted: boolean = useSelector(getIsStarted);
   const isFinished: boolean = useSelector(getIsFinished);
+  const isTouched: boolean = useSelector(getIsTouched);
+  const isScoreStored: boolean = useSelector(getIsScoreStored);
   const player: string = useSelector(getPlayer);
   const score: number = useSelector(getScore);
   const time: number = useSelector(getTime);
@@ -47,11 +63,14 @@ const useGame = (): HookProps => {
       dispatch(SELECT_CARD(index));
     }
   };
+  const setScore = () => dispatch(SET_RANKING({ player, score }));
 
   return {
     isPlaying,
     isStarted,
     isFinished,
+    isTouched,
+    isScoreStored,
     player,
     score,
     time,
@@ -60,7 +79,8 @@ const useGame = (): HookProps => {
     clickedCards,
     playerChangeHandler,
     launchGameHandler,
-    selectCardHandler
+    selectCardHandler,
+    setScore
   };
 
 };
