@@ -35,14 +35,11 @@ const WelcomeScreen: FunctionComponent = () => {
     <Container>
       <InnerContainer>
         <Wrapper
-          size={ 900 }>
+          size={ 800 }>
           <Title>
             <BitTitle>MeeMoo</BitTitle>
             <h2>Alleniamo la memoria divertendoci</h2>
           </Title>
-        </Wrapper>
-        <Wrapper
-          size={ 600 }>
           <NewGame>
             <Input
               type="text"
@@ -55,6 +52,7 @@ const WelcomeScreen: FunctionComponent = () => {
           <Rankings
             scores={ rankings }/>
         </Wrapper>
+        <GreenBar/>
       </InnerContainer>
     </Container>
   );
@@ -64,6 +62,7 @@ const WelcomeScreen: FunctionComponent = () => {
 export default WelcomeScreen;
 
 const Container = styled.div`
+  position: relative;
   height: 100%;
   width: 100%;
   background-size: cover;
@@ -77,10 +76,20 @@ const InnerContainer = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   flex-direction: column;
   background-color: rgba(255, 255, 255, .2);
   overflow: auto;
+`;
+
+const GreenBar = styled.div`
+  position: absolute;
+  background-color: #99C855;
+  height: 20px;
+  width: 300px;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
 const Wrapper = styled.div<{ size: number }>`
