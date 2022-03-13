@@ -31,7 +31,7 @@ export default Rankings;
 
 const Container = styled.ul`
   width: 100%;
-  max-width: 600px;
+  //max-width: 600px;
   padding: 0;
   margin: 0;
   list-style-type: none;
