@@ -70,7 +70,8 @@ const gameReducer = createReducer<GameState>(GameInitialState, {
   }),
   [ SET_RANKING.fulfilled.type ]: (state, action) => ({
     ...state,
-    stored: true
+    stored: true,
+    score: action.payload
   }),
   [ LAUNCH_GAME.type ]: (state, action) => {
     const pictures = [ ...state.availablePictures ].sort(() => 0.5 - Math.random()).slice(0, 9);

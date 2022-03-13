@@ -63,7 +63,7 @@ const useGame = (): HookProps => {
       dispatch(SELECT_CARD(index));
     }
   };
-  const setScore = () => dispatch(SET_RANKING({ player, score }));
+  const setScore = () => dispatch(SET_RANKING({ player, score, time }));
 
   return {
     isPlaying,

@@ -99,13 +99,15 @@ const Play: FunctionComponent = () => {
       if (time <= 0) {
         clearInterval(interval);
         dispatch(END_GAME());
-        setScore();
+        if (!isScoreStored) {
+          setScore();
+        }
       }
     }
     return () => {
       clearInterval(interval);
     };
-  }, [ isPlaying, time, setScore, dispatch ]);
+  }, [ isPlaying, time, setScore, isScoreStored, dispatch ]);
 
   // INFO: timed out animation on card click
   // TODO: esternalizzare il timeout in uno state, in modo da poterlo stoppare se il giocatore completa il gioco prima della fine del tempo

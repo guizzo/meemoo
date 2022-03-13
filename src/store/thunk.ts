@@ -27,19 +27,28 @@ export const GET_RANKINGS = createAsyncThunk(ACTION_GET_RANKINGS, async (): Prom
   return data;
 });
 
-export const SET_RANKING = createAsyncThunk(ACTION_SET_RANKINGS, async ({ player, score }: { player: string, score: number }): Promise<void> => {
-  let data: Ranking[] = [];
+export const SET_RANKING = createAsyncThunk(ACTION_SET_RANKINGS, async ({ player, score, time }: {
+  player: string,
+  score: number,
+  time: number
+}): Promise<number> => {
+  let totalScore: number = 0;
   try {
+    let data: Ranking[] = [];
     const stored: string | null = await localStorage.getItem(RANKINGS_KEY);
     if (stored) {
       const currentRankings = JSON.parse(stored);
       data = currentRankings.filter((ranking: Ranking) => ranking.player !== player);
-      data = [ ...data, { player, score } ].sort((a: Ranking, b: Ranking) => a.score > b.score ? -1 : 0);
+      totalScore = score;
+      if (time > 0) {
+        totalScore = totalScore + (time * 25);
+      }
+      data = [ ...data, { player, score: totalScore } ].sort((a: Ranking, b: Ranking) => a.score > b.score ? -1 : 0);
       const newData = JSON.stringify(data);
       await localStorage.setItem(RANKINGS_KEY, newData);
     }
   } catch (e) {
     console.error(e);
   }
-  return;
+  return totalScore;
 });

@@ -1,4 +1,4 @@
-import { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent, useEffect } from 'react';
 import styled from 'styled-components';
 import Background from '../../assets/images/background.jpeg';
 import useGame from '../../hooks/useGame';
@@ -10,26 +10,34 @@ import HoverCursor from '../../assets/images/cursor-hover.png';
 
 const WelcomeScreen: FunctionComponent = () => {
 
-  const [ touched, setTouched ] = useState<boolean>(false);
-  const [ musicIsPlaying, setMusicIsPlaying ] = useState<boolean>(false);
+  // const [ touched, setTouched ] = useState<boolean>(false);
+  // const [ musicIsPlaying, setMusicIsPlaying ] = useState<boolean>(false);
 
   const dispatch = useDispatch();
+
+  // const { startPlayMusic } = useAudio();
 
   const { player, rankings, playerChangeHandler, launchGameHandler } = useGame();
 
   useEffect(() => {
-    window.document.addEventListener('click', () => setTouched(true));
+    // window.document.addEventListener('click', () => setTouched(true));
     dispatch(GET_RANKINGS());
   }, [ dispatch ]);
 
-  useEffect(() => {
-    if (touched && !musicIsPlaying) {
-      const audio = new Audio('/sounds/welcome.mp3');
-      audio.loop = true;
-      audio.play();
-      setMusicIsPlaying(true);
-    }
-  }, [ touched, musicIsPlaying ]);
+  // useEffect(() => {
+  //   // if (touched) {
+  //   //   startPlayMusic();
+  //   // }
+  //   // if (touched && !musicIsPlaying) {
+  //   //   const audio = new Audio('/sounds/playing.mp3');
+  //   //   audio.loop = true;
+  //   //   audio.play();
+  //   //   setMusicIsPlaying(true);
+  //   // }
+  // }, [
+  //   touched,
+  //   // musicIsPlaying
+  // ]);
 
   return (
     <Container>
