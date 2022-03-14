@@ -10,34 +10,14 @@ import HoverCursor from '../../assets/images/cursor-hover.png';
 
 const WelcomeScreen: FunctionComponent = () => {
 
-  // const [ touched, setTouched ] = useState<boolean>(false);
-  // const [ musicIsPlaying, setMusicIsPlaying ] = useState<boolean>(false);
-
   const dispatch = useDispatch();
-
-  // const { startPlayMusic } = useAudio();
 
   const { player, rankings, playerChangeHandler, launchGameHandler } = useGame();
 
+  // INFO: retrieve rankings
   useEffect(() => {
-    // window.document.addEventListener('click', () => setTouched(true));
     dispatch(GET_RANKINGS());
   }, [ dispatch ]);
-
-  // useEffect(() => {
-  //   // if (touched) {
-  //   //   startPlayMusic();
-  //   // }
-  //   // if (touched && !musicIsPlaying) {
-  //   //   const audio = new Audio('/sounds/playing.mp3');
-  //   //   audio.loop = true;
-  //   //   audio.play();
-  //   //   setMusicIsPlaying(true);
-  //   // }
-  // }, [
-  //   touched,
-  //   // musicIsPlaying
-  // ]);
 
   return (
     <Container>
@@ -60,7 +40,6 @@ const WelcomeScreen: FunctionComponent = () => {
           <Rankings
             scores={ rankings }/>
         </Wrapper>
-        <GreenBar/>
       </InnerContainer>
     </Container>
   );
@@ -90,16 +69,6 @@ const InnerContainer = styled.div`
   overflow: auto;
 `;
 
-const GreenBar = styled.div`
-  position: absolute;
-  background-color: #99C855;
-  height: 20px;
-  width: 300px;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-`;
-
 const Wrapper = styled.div<{ size: number }>`
   width: 100%;
   max-width: ${ ({ size }) => size }px;
@@ -116,7 +85,6 @@ const Title = styled.div`
 const BitTitle = styled.h1`
   color: #eb9542;
   font-size: 6em;
-  //font-weight: bold;
 `;
 
 const NewGame = styled.div`

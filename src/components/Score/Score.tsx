@@ -2,6 +2,7 @@ import { FunctionComponent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import CurtainTop from '../../assets/images/curtain-top.png';
 import Curtain from '../../assets/images/curtain.png';
+import ReactConfetti from 'react-confetti';
 
 interface Props {
   gameIsEnded: boolean;
@@ -33,6 +34,13 @@ const Score: FunctionComponent<Props> = ({ gameIsEnded, player, score }) => {
         opened={ opened }/>
       <CurtainRight
         opened={ opened }/>
+      {
+        score !== undefined && score > 1000 && (
+          <ReactConfetti
+            width={ window.innerWidth }
+            height={ window.innerHeight }/>
+        )
+      }
       <Summary>
         <PlayerContainer>
           { player }

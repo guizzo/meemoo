@@ -10,17 +10,6 @@ import { END_GAME, FLIP_CARD, SET_PAIR_CORRECT, SET_PAIR_WRONG, START_GAME, TIME
 import { Picture } from '../../models/picture';
 import Score from '../../components/Score/Score';
 
-/**
- * ***** GESTIONE CLASSIFICA GIOCATORI ******
- * 1. usare action ADD_SCORE
- * 2. al completamento della partita OR allo scadere del timer dispatchare la fine del gioco e settare lo score tramite un thunk
- * 3. nel reducer, a score settato, ripristinare lo stato iniziare dello store e forzare il redirect alla welcomePage
- *
- * ***** ENHANCEMENTS ******
- * 1. Barra di stato del gioco con font più visibili e/o colorati
- * 2. Riproduzione di suoni WOW, COOL e POOR a fine partita in base al punteggio
- */
-
 const Play: FunctionComponent = () => {
 
   const dispatch = useDispatch();
@@ -98,10 +87,10 @@ const Play: FunctionComponent = () => {
       }
       if (time <= 0) {
         clearInterval(interval);
-        dispatch(END_GAME());
         if (!isScoreStored) {
           setScore();
         }
+        dispatch(END_GAME());
       }
     }
     return () => {

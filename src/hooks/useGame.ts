@@ -2,7 +2,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getClickedCards,
   getIsFinished,
-  getIsPlaying, getIsScoreStored,
+  getIsPlaying,
+  getIsScoreStored,
   getIsStarted,
   getIsTouched,
   getPlayer,
