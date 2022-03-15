@@ -15,7 +15,7 @@ const App: FunctionComponent = () => {
     if (touched) {
       startPlayMusic();
     }
-  }, [ touched ]);
+  }, [ touched, startPlayMusic ]);
 
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>;
