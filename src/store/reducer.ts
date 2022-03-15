@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { FLUSH_PLAYER, GET_RANKINGS, SET_PLAYER, SET_RANKING } from './thunk';
-import { END_GAME, FLIP_CARD, LAUNCH_GAME, SELECT_CARD, SET_PAIR_CORRECT, SET_PAIR_WRONG, START_GAME, TIME_TICK, UPDATE_SCORE } from './actions';
+import { END_GAME, FLIP_CARD, LAUNCH_GAME, RESTART_GAME, SELECT_CARD, SET_PAIR_CORRECT, SET_PAIR_WRONG, START_GAME, TIME_TICK, UPDATE_SCORE } from './actions';
 import { Picture } from '../models/picture';
 import { Ranking } from '../models/ranking';
 
@@ -170,6 +170,20 @@ const gameReducer = createReducer<GameState>(GameInitialState, {
       }
       return card;
     })
+  }),
+  [ RESTART_GAME.type ]: (state, action) => ({
+    ...state,
+    playing: false,
+    player: '',
+    score: 0,
+    time: 60,
+    started: false,
+    finished: false,
+    touched: false,
+    stored: false,
+    rankings: [],
+    selectedPictures: [],
+    clicked: []
   })
 });
 

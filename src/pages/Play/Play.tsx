@@ -99,7 +99,7 @@ const Play: FunctionComponent = () => {
   }, [ isPlaying, time, setScore, isScoreStored, dispatch ]);
 
   // INFO: timed out animation on card click
-  // TODO: esternalizzare il timeout in uno state, in modo da poterlo stoppare se il giocatore completa il gioco prima della fine del tempo
+  // TODO: esternalizzare il timeout, in modo da poterlo stoppare se il giocatore completa il gioco prima della fine del tempo
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>;
     if (clickedCards && clickedCards.length === 2) {

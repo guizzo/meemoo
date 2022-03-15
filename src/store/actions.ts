@@ -2,6 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 export const GAME = 'GAME';
 
+export const ACTION_RESTART_GAME = 'RESTART GAME';
 export const ACTION_SET_PLAYER = 'SET PLAYER';
 export const ACTION_LAUNCH_GAME = 'LAUNCH GAME';
 export const ACTION_FLUSH_PLAYER = 'FLUSH PLAYER';
@@ -17,6 +18,7 @@ export const ACTION_FLIP_CARD = 'FLIP CARD';
 export const ACTION_SET_PAIR_CORRECT = 'SET PAIR CORRECT';
 export const ACTION_SET_PAIR_WRONG = 'SET PAIR WRONG';
 
+export const RESTART_GAME = createAction(ACTION_RESTART_GAME);
 export const SET_PLAYER = createAction<string>(ACTION_SET_PLAYER);
 export const LAUNCH_GAME = createAction(ACTION_LAUNCH_GAME);
 export const START_GAME = createAction(ACTION_START_GAME);

@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import CurtainTop from '../../assets/images/curtain-top.png';
 import Curtain from '../../assets/images/curtain.png';
 import ReactConfetti from 'react-confetti';
+import { useNavigate } from 'react-router-dom';
+import { RESTART_GAME } from '../../store/actions';
+import { useDispatch } from 'react-redux';
 
 interface Props {
   gameIsEnded: boolean;
@@ -12,7 +15,17 @@ interface Props {
 
 const Score: FunctionComponent<Props> = ({ gameIsEnded, player, score }) => {
 
+  const dispatch = useDispatch();
+
+  const navigator = useNavigate();
+
   const [ opened, setOpened ] = useState<boolean>(false);
+  const [ points, setPoints ] = useState<number>(0);
+
+  const restartGameHandler = (): void => {
+    dispatch(RESTART_GAME());
+    navigator('/');
+  };
 
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>;
@@ -26,9 +39,26 @@ const Score: FunctionComponent<Props> = ({ gameIsEnded, player, score }) => {
     };
   }, [ gameIsEnded ]);
 
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+    if (gameIsEnded && score !== undefined && score !== null) {
+      interval = setInterval(() => {
+        if (points === score) {
+          clearInterval(interval);
+        } else {
+          setPoints((state) => state + 1);
+        }
+      }, 2);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+  }, [ gameIsEnded, score, points ]);
+
   return (
     <Container
-      gameIsEnded={ gameIsEnded }>
+      gameIsEnded={ gameIsEnded }
+      onClick={ gameIsEnded && points === score ? restartGameHandler : () => null }>
       <CurtainTopBackground/>
       <CurtainLeft
         opened={ opened }/>
@@ -46,7 +76,7 @@ const Score: FunctionComponent<Props> = ({ gameIsEnded, player, score }) => {
           { player }
         </PlayerContainer>
         <ScoreContainer>
-          { score }
+          { points }
         </ScoreContainer>
       </Summary>
     </Container>
@@ -107,14 +137,18 @@ const CurtainRight = styled(Curtains)<{ opened: boolean }>`
 `;
 
 const Summary = styled.div`
-  text-shadow:  2px 0 0 #fff, 
-                -2px 0 0 #fff,
-                0 2px 0 #fff, 
-                0 -2px 0 #fff,
-                1px 1px #fff,
-                -1px -1px 0 #fff,
-                1px -1px 0 #fff,
-                -1px 1px 0 #fff;
+  font-size: 5em;
+  text-align: center;
+  letter-spacing: 10px;
+  color: #ff5900;
+  text-shadow: 2px 0 0 #fff,
+  -2px 0 0 #fff,
+  0 2px 0 #fff,
+    0 -2px 0 #fff,
+  1px 1px #fff,
+    -1px -1px 0 #fff,
+    1px -1px 0 #fff,
+  -1px 1px 0 #fff;
 `;
 
 const PlayerContainer = styled.div`
