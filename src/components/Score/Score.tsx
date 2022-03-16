@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import CurtainTop from '../../assets/images/curtain-top.png';
 import Curtain from '../../assets/images/curtain.png';
 import ReactConfetti from 'react-confetti';
-import { useNavigate } from 'react-router-dom';
 import { RESTART_GAME } from '../../store/actions';
 import { useDispatch } from 'react-redux';
 
@@ -15,16 +14,16 @@ interface Props {
 
 const Score: FunctionComponent<Props> = ({ gameIsEnded, player, score }) => {
 
-  const dispatch = useDispatch();
+  console.log(window.location.origin);
 
-  const navigator = useNavigate();
+  const dispatch = useDispatch();
 
   const [ opened, setOpened ] = useState<boolean>(false);
   const [ points, setPoints ] = useState<number>(0);
 
   const restartGameHandler = (): void => {
     dispatch(RESTART_GAME());
-    navigator('/');
+    window.location.href = window.location.origin;
   };
 
   useEffect(() => {
